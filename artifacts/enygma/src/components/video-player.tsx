@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Hls from "hls.js";
-import { ArrowLeft, Play, Pause, Volume2, VolumeX, Maximize, Minimize, Settings, Cast, RotateCcw, RotateCw, Gauge, Mic2, Captions } from "lucide-react";
+import { ArrowLeft, Play, Pause, Volume2, VolumeX, Maximize, Minimize, Settings, Cast, Tv2, RotateCcw, RotateCw, Gauge, Mic2, Captions } from "lucide-react";
 
 interface Track {
   file: string;
