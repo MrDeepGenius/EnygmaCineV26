@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Hls from "hls.js";
-import { ArrowLeft, Play, Pause, Volume2, VolumeX, Maximize, Minimize, Settings, Cast, Tv2, RotateCcw, RotateCw, Gauge, Mic2, Captions } from "lucide-react";
+import { ArrowLeft, Play, Pause, Volume2, VolumeX, Maximize, Minimize, Settings, Cast, RotateCcw, RotateCw, Gauge, Mic2, Captions } from "lucide-react";
 
 interface Track {
   file: string;
@@ -13,8 +13,6 @@ interface VideoPlayerProps {
   hlsUrl: string;
   tracks?: Track[];
   title: string;
-  logoUrl?: string;
-  originalUrl?: string;
   onBack: () => void;
   episodes?: { label: string; onSelect: () => void; active: boolean }[];
 }
@@ -23,7 +21,7 @@ type BottomTab = "none" | "speed" | "quality" | "audio";
 
 const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
-export function VideoPlayer({ hlsUrl, tracks, title, logoUrl, originalUrl, onBack, episodes }: VideoPlayerProps) {
+export function VideoPlayer({ hlsUrl, tracks, title, onBack, episodes }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -226,20 +224,12 @@ export function VideoPlayer({ hlsUrl, tracks, title, logoUrl, originalUrl, onBac
 
       {/* Loading */}
       {loading && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none gap-5">
-          {logoUrl ? (
-            <img
-              src={logoUrl}
-              alt={title}
-              className="max-h-20 max-w-[260px] object-contain drop-shadow-[0_2px_24px_rgba(0,0,0,1)] animate-pulse"
-            />
-          ) : (
-            <p className="text-white font-bold text-lg tracking-wide">{title}</p>
-          )}
-          <div className="relative w-10 h-10">
-            <div className="absolute inset-0 rounded-full border-[3px] border-white/10" />
-            <div className="absolute inset-0 rounded-full border-[3px] border-[#A855F7] border-t-transparent animate-spin" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none gap-3">
+          <div className="relative w-14 h-14">
+            <div className="absolute inset-0 rounded-full border-4 border-white/10" />
+            <div className="absolute inset-0 rounded-full border-4 border-[#A855F7] border-t-transparent animate-spin" />
           </div>
+          <p className="text-white/40 text-xs tracking-[0.2em] uppercase">Cargando</p>
         </div>
       )}
 
@@ -326,44 +316,10 @@ export function VideoPlayer({ hlsUrl, tracks, title, logoUrl, originalUrl, onBac
             <ArrowLeft className="w-6 h-6" />
           </button>
           <div className="flex-1 min-w-0">
-            <p className="text-[#A855F7] text-[10px] font-bold uppercase tracking-[0.25em] mb-1">Estás mirando</p>
-            {logoUrl ? (
-              <img
-                src={logoUrl}
-                alt={title}
-                className="max-h-7 max-w-[160px] object-contain object-left drop-shadow-[0_1px_8px_rgba(0,0,0,1)]"
-              />
-            ) : (
-              <p className="text-white font-semibold text-sm truncate">{title}</p>
-            )}
+            <p className="text-[#A855F7] text-[10px] font-bold uppercase tracking-[0.25em]">Estas mirando</p>
+            <p className="text-white font-semibold text-sm truncate">{title}</p>
           </div>
           <div className="flex items-center gap-3">
-            {/* Web Video Caster — abre la app con el URL original del Sheets */}
-            {originalUrl && (
-              <button
-                onClick={() => {
-                  const encoded = encodeURIComponent(originalUrl);
-                  const encodedTitle = encodeURIComponent(title);
-                  const wvcUrl = `webvideocaster://cast?url=${encoded}&title=${encodedTitle}`;
-                  const playStoreUrl = "https://play.google.com/store/apps/details?id=com.instantbits.cast.webvideo";
-                  const iframe = document.createElement("iframe");
-                  iframe.style.display = "none";
-                  iframe.src = wvcUrl;
-                  document.body.appendChild(iframe);
-                  const fallback = setTimeout(() => {
-                    document.body.removeChild(iframe);
-                    window.open(playStoreUrl, "_blank");
-                  }, 1500);
-                  const onBlur = () => { clearTimeout(fallback); document.body.removeChild(iframe); };
-                  window.addEventListener("blur", onBlur, { once: true });
-                }}
-                title="Abrir con Web Video Caster"
-                className="text-white/70 hover:text-white transition-colors"
-              >
-                <Tv2 className="w-5 h-5" />
-              </button>
-            )}
-            {/* Chromecast nativo — igual que antes */}
             {castAvailable && (
               <button onClick={castVideo} className="text-white/70 hover:text-white transition-colors">
                 <Cast className="w-5 h-5" />

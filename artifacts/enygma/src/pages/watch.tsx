@@ -59,7 +59,6 @@ export default function Watch() {
   let posterUrl = "";
   let backdropUrl = "";
   let año = "";
-  let logoUrl = "";
 
   if (category === "movie" && movie) {
     rawUrl = movie.urlReproduccion || "";
@@ -67,7 +66,6 @@ export default function Watch() {
     posterUrl = movie.posterUrl || "";
     backdropUrl = movie.backdropUrl || "";
     año = movie.año || "";
-    logoUrl = movie.logoUrl || "";
   } else if ((category === "serie" || category === "anime") && (series || anime)) {
     const d = category === "serie" ? series : anime;
     const ep = d?.episodes?.[selectedEpisode];
@@ -76,7 +74,6 @@ export default function Watch() {
     posterUrl = d?.series?.posterUrl || "";
     backdropUrl = d?.series?.backdropUrl || "";
     año = d?.series?.año || "";
-    logoUrl = (d?.series as { logoUrl?: string })?.logoUrl || "";
   }
 
   // Save watch progress when content title is known
@@ -170,8 +167,6 @@ export default function Watch() {
       <VideoPlayer
         hlsUrl={proxiedHlsUrl}
         title={title}
-        logoUrl={logoUrl || undefined}
-        originalUrl={rawUrl}
         onBack={goBack}
         episodes={episodeButtons}
       />
