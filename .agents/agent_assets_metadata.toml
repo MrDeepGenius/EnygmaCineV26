@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "irKzXaBCsZRym9H7HULoW"
+uri = "file://enygma-app.tar.gz"
+type = "unspecified"
+title = "ENYGMA App — código fuente completo"

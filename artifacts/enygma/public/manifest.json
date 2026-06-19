@@ -1,0 +1,25 @@
+{
+  "name": "ENYGMA Cine",
+  "short_name": "ENYGMA",
+  "description": "Plataforma privada de streaming para la familia Enigma",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#000000",
+  "theme_color": "#E50914",
+  "categories": ["entertainment"],
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
