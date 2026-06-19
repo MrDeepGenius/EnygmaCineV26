@@ -13,6 +13,7 @@ interface VideoPlayerProps {
   hlsUrl: string;
   tracks?: Track[];
   title: string;
+  logoUrl?: string;
   onBack: () => void;
   episodes?: { label: string; onSelect: () => void; active: boolean }[];
 }
@@ -21,7 +22,7 @@ type BottomTab = "none" | "speed" | "quality" | "audio";
 
 const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
-export function VideoPlayer({ hlsUrl, tracks, title, onBack, episodes }: VideoPlayerProps) {
+export function VideoPlayer({ hlsUrl, tracks, title, logoUrl, onBack, episodes }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -224,12 +225,18 @@ export function VideoPlayer({ hlsUrl, tracks, title, onBack, episodes }: VideoPl
 
       {/* Loading */}
       {loading && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none gap-3">
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none gap-4">
+          {logoUrl && (
+            <img
+              src={logoUrl}
+              alt={title}
+              className="max-h-16 max-w-[220px] object-contain drop-shadow-[0_2px_16px_rgba(0,0,0,1)]"
+            />
+          )}
           <div className="relative w-14 h-14">
             <div className="absolute inset-0 rounded-full border-4 border-white/10" />
             <div className="absolute inset-0 rounded-full border-4 border-[#A855F7] border-t-transparent animate-spin" />
           </div>
-          <p className="text-white/40 text-xs tracking-[0.2em] uppercase">Cargando</p>
         </div>
       )}
 
