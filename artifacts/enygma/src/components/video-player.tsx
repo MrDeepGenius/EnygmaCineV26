@@ -13,6 +13,7 @@ interface VideoPlayerProps {
   hlsUrl: string;
   tracks?: Track[];
   title: string;
+  logoUrl?: string;
   onBack: () => void;
   episodes?: { label: string; onSelect: () => void; active: boolean }[];
 }
@@ -21,7 +22,7 @@ type BottomTab = "none" | "speed" | "quality" | "audio";
 
 const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
-export function VideoPlayer({ hlsUrl, tracks, title, onBack, episodes }: VideoPlayerProps) {
+export function VideoPlayer({ hlsUrl, tracks, title, logoUrl, onBack, episodes }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -224,12 +225,20 @@ export function VideoPlayer({ hlsUrl, tracks, title, onBack, episodes }: VideoPl
 
       {/* Loading */}
       {loading && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none gap-3">
-          <div className="relative w-14 h-14">
-            <div className="absolute inset-0 rounded-full border-4 border-white/10" />
-            <div className="absolute inset-0 rounded-full border-4 border-[#A855F7] border-t-transparent animate-spin" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none gap-5">
+          {logoUrl ? (
+            <img
+              src={logoUrl}
+              alt={title}
+              className="max-h-20 max-w-[260px] object-contain drop-shadow-[0_2px_24px_rgba(0,0,0,1)] animate-pulse"
+            />
+          ) : (
+            <p className="text-white font-bold text-lg tracking-wide">{title}</p>
+          )}
+          <div className="relative w-10 h-10">
+            <div className="absolute inset-0 rounded-full border-[3px] border-white/10" />
+            <div className="absolute inset-0 rounded-full border-[3px] border-[#A855F7] border-t-transparent animate-spin" />
           </div>
-          <p className="text-white/40 text-xs tracking-[0.2em] uppercase">Cargando</p>
         </div>
       )}
 
@@ -316,8 +325,16 @@ export function VideoPlayer({ hlsUrl, tracks, title, onBack, episodes }: VideoPl
             <ArrowLeft className="w-6 h-6" />
           </button>
           <div className="flex-1 min-w-0">
-            <p className="text-[#A855F7] text-[10px] font-bold uppercase tracking-[0.25em]">Estas mirando</p>
-            <p className="text-white font-semibold text-sm truncate">{title}</p>
+            <p className="text-[#A855F7] text-[10px] font-bold uppercase tracking-[0.25em] mb-1">Estás mirando</p>
+            {logoUrl ? (
+              <img
+                src={logoUrl}
+                alt={title}
+                className="max-h-7 max-w-[160px] object-contain object-left drop-shadow-[0_1px_8px_rgba(0,0,0,1)]"
+              />
+            ) : (
+              <p className="text-white font-semibold text-sm truncate">{title}</p>
+            )}
           </div>
           <div className="flex items-center gap-3">
             {castAvailable && (
