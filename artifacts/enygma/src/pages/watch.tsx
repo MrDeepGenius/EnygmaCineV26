@@ -171,6 +171,7 @@ export default function Watch() {
         hlsUrl={proxiedHlsUrl}
         title={title}
         logoUrl={logoUrl || undefined}
+        originalUrl={rawUrl || undefined}
         onBack={goBack}
         episodes={episodeButtons}
       />

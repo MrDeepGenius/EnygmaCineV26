@@ -14,6 +14,7 @@ interface VideoPlayerProps {
   tracks?: Track[];
   title: string;
   logoUrl?: string;
+  originalUrl?: string;
   onBack: () => void;
   episodes?: { label: string; onSelect: () => void; active: boolean }[];
 }
@@ -22,7 +23,7 @@ type BottomTab = "none" | "speed" | "quality" | "audio";
 
 const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
-export function VideoPlayer({ hlsUrl, tracks, title, logoUrl, onBack, episodes }: VideoPlayerProps) {
+export function VideoPlayer({ hlsUrl, tracks, title, logoUrl, originalUrl, onBack, episodes }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -322,11 +323,27 @@ export function VideoPlayer({ hlsUrl, tracks, title, logoUrl, onBack, episodes }
           >
             <ArrowLeft className="w-6 h-6" />
           </button>
-          <img
-            src={`${import.meta.env.BASE_URL}enygma-logo.png`}
-            alt="ENYGMA"
-            className="h-8 w-8 object-contain drop-shadow-[0_1px_6px_rgba(168,85,247,0.6)]"
-          />
+          {originalUrl ? (
+            <button
+              onClick={() => {
+                window.location.href = `webvideocaster://cast?url=${encodeURIComponent(originalUrl)}&title=${encodeURIComponent(title)}`;
+              }}
+              title="Abrir en Web Video Caster"
+              className="active:scale-90 transition-transform"
+            >
+              <img
+                src={`${import.meta.env.BASE_URL}enygma-logo.png`}
+                alt="ENYGMA"
+                className="h-8 w-8 object-contain drop-shadow-[0_1px_6px_rgba(168,85,247,0.6)]"
+              />
+            </button>
+          ) : (
+            <img
+              src={`${import.meta.env.BASE_URL}enygma-logo.png`}
+              alt="ENYGMA"
+              className="h-8 w-8 object-contain drop-shadow-[0_1px_6px_rgba(168,85,247,0.6)]"
+            />
+          )}
           <div className="flex items-center gap-3">
             {castAvailable && (
               <button onClick={castVideo} className="text-white/70 hover:text-white transition-colors">
