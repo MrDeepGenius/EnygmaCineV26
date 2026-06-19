@@ -1,77 +1,21 @@
 interface Platform {
   name: string;
-  shortName: string;
+  letter: string;
   bg: string;
-  text: string;
-  accent: string;
-  logo: string;
+  letterColor: string;
 }
 
 const ALL_PLATFORMS: Platform[] = [
-  {
-    name: "Netflix",
-    shortName: "N",
-    bg: "linear-gradient(135deg, #141414 0%, #1a0000 100%)",
-    text: "#A855F7",
-    accent: "#A855F7",
-    logo: "NETFLIX",
-  },
-  {
-    name: "Disney+",
-    shortName: "D+",
-    bg: "linear-gradient(135deg, #040714 0%, #0b1a6e 100%)",
-    text: "#ffffff",
-    accent: "#113ccf",
-    logo: "DISNEY+",
-  },
-  {
-    name: "Prime Video",
-    shortName: "P",
-    bg: "linear-gradient(135deg, #00111a 0%, #003d5c 100%)",
-    text: "#00a8e0",
-    accent: "#00a8e0",
-    logo: "prime video",
-  },
-  {
-    name: "Apple TV+",
-    shortName: "A",
-    bg: "linear-gradient(135deg, #1d1d1f 0%, #2c2c2e 100%)",
-    text: "#ffffff",
-    accent: "#ffffff",
-    logo: "Apple TV+",
-  },
-  {
-    name: "Max",
-    shortName: "M",
-    bg: "linear-gradient(135deg, #001433 0%, #002be7 100%)",
-    text: "#ffffff",
-    accent: "#5599ff",
-    logo: "max",
-  },
-  {
-    name: "Crunchyroll",
-    shortName: "CR",
-    bg: "linear-gradient(135deg, #1a0a00 0%, #f47521 100%)",
-    text: "#ffffff",
-    accent: "#f47521",
-    logo: "CRUNCHYROLL",
-  },
-  {
-    name: "HBO",
-    shortName: "H",
-    bg: "linear-gradient(135deg, #1a0033 0%, #8c14fc 100%)",
-    text: "#ffffff",
-    accent: "#bf7fff",
-    logo: "HBO",
-  },
-  {
-    name: "Paramount+",
-    shortName: "P+",
-    bg: "linear-gradient(135deg, #000c33 0%, #0064ff 100%)",
-    text: "#ffffff",
-    accent: "#4d94ff",
-    logo: "PARAMOUNT+",
-  },
+  { name: "Netflix",     letter: "N",  bg: "#E50914", letterColor: "#fff" },
+  { name: "Disney+",     letter: "D+", bg: "#113CCF", letterColor: "#fff" },
+  { name: "Prime Video", letter: "P",  bg: "#00A8E0", letterColor: "#fff" },
+  { name: "Apple TV+",   letter: "A",  bg: "#1D1D1F", letterColor: "#fff" },
+  { name: "Max",         letter: "M",  bg: "#002BE7", letterColor: "#fff" },
+  { name: "HBO Max",     letter: "H",  bg: "#5300E8", letterColor: "#fff" },
+  { name: "Crunchyroll", letter: "CR", bg: "#F47521", letterColor: "#fff" },
+  { name: "Paramount+",  letter: "P+", bg: "#0064FF", letterColor: "#fff" },
+  { name: "Hulu",        letter: "Hu", bg: "#1CE783", letterColor: "#000" },
+  { name: "Star+",       letter: "S+", bg: "#C01EFF", letterColor: "#fff" },
 ];
 
 function seededRandom(seed: string): () => number {
@@ -92,36 +36,27 @@ interface StreamingPlatformsProps {
   count?: number;
 }
 
-export function StreamingPlatforms({ contentId, count = 4 }: StreamingPlatformsProps) {
+export function StreamingPlatforms({ contentId, count = 2 }: StreamingPlatformsProps) {
   const rand = seededRandom(contentId);
   const shuffled = [...ALL_PLATFORMS].sort(() => rand() - 0.5);
   const platforms = shuffled.slice(0, count);
 
   return (
     <div>
-      <p className="text-xs font-bold text-white/35 uppercase tracking-[0.15em] mb-3">Disponible en</p>
-      <div className="flex flex-wrap gap-2.5">
+      <p className="text-xs font-bold text-white/40 uppercase tracking-[0.15em] mb-3">Disponible en</p>
+      <div className="flex flex-col gap-2">
         {platforms.map((p) => (
           <div
             key={p.name}
-            className="group relative flex items-center gap-2 px-3.5 py-2 rounded-xl cursor-pointer transition-all duration-200 hover:scale-105 hover:brightness-110 select-none"
-            style={{
-              background: p.bg,
-              border: `1px solid ${p.accent}35`,
-              boxShadow: `0 2px 16px ${p.accent}25, inset 0 1px 0 rgba(255,255,255,0.05)`,
-            }}
+            className="flex items-center gap-3 bg-white/5 border border-white/8 rounded-xl px-4 py-3"
           >
-            {/* Coloured dot */}
             <div
-              className="w-2 h-2 rounded-full flex-shrink-0"
-              style={{ background: p.accent, boxShadow: `0 0 6px ${p.accent}` }}
-            />
-            <span
-              className="text-xs font-black tracking-wider leading-none whitespace-nowrap"
-              style={{ color: p.text }}
+              className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-black"
+              style={{ background: p.bg, color: p.letterColor }}
             >
-              {p.logo}
-            </span>
+              {p.letter}
+            </div>
+            <span className="text-white font-semibold text-sm">{p.name}</span>
           </div>
         ))}
       </div>
