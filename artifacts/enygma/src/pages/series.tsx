@@ -2,6 +2,7 @@ import { useListSeries } from "@workspace/api-client-react";
 import { useProfile } from "@/lib/profile-context";
 import { Layout } from "@/components/layout";
 import { PosterCard } from "@/components/poster-card";
+import { SectionBanner } from "@/components/section-banner";
 import { useState } from "react";
 import type { Series } from "@workspace/api-client-react";
 
@@ -24,6 +25,10 @@ export default function SeriesPage() {
 
   return (
     <Layout>
+      {!isLoading && allItems.length > 0 && (
+        <SectionBanner items={allItems as any} />
+      )}
+
       <div className="max-w-screen-2xl mx-auto px-3 md:px-10 lg:px-16 xl:px-20 py-6 md:py-8">
         <div className="flex items-center justify-between gap-3 mb-5 md:mb-8">
           <h1 className="text-2xl md:text-3xl font-black font-netflix tracking-tight text-white">

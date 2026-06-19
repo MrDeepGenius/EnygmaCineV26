@@ -2,6 +2,7 @@ import { useListMovies } from "@workspace/api-client-react";
 import { useProfile } from "@/lib/profile-context";
 import { Layout } from "@/components/layout";
 import { PosterCard } from "@/components/poster-card";
+import { SectionBanner } from "@/components/section-banner";
 import { useState } from "react";
 import type { Movie } from "@workspace/api-client-react";
 
@@ -28,6 +29,10 @@ export default function Movies() {
 
   return (
     <Layout>
+      {!isLoading && allItems.length > 0 && (
+        <SectionBanner items={allItems} />
+      )}
+
       <div className="max-w-screen-2xl mx-auto px-3 md:px-10 lg:px-16 xl:px-20 py-6 md:py-8">
         {/* Header */}
         <div className="flex flex-col gap-3 mb-5 md:mb-8">
