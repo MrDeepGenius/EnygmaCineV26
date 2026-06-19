@@ -29,12 +29,9 @@ export default function Movies() {
 
   return (
     <Layout>
-      {!isLoading && allItems.length > 0 && (
-        <SectionBanner items={allItems} />
-      )}
+      <SectionBanner category="movie" profile={profile || undefined} />
 
       <div className="max-w-screen-2xl mx-auto px-3 md:px-10 lg:px-16 xl:px-20 py-6 md:py-8">
-        {/* Header */}
         <div className="flex flex-col gap-3 mb-5 md:mb-8">
           <div className="flex items-center justify-between gap-3">
             <h1 className="text-2xl md:text-3xl font-black font-netflix tracking-tight text-white">
@@ -50,7 +47,6 @@ export default function Movies() {
             />
           </div>
 
-          {/* Genre filter */}
           <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
             <button
               onClick={() => { setGenre(""); setDisplayLimit(PAGE_SIZE); }}
@@ -87,12 +83,9 @@ export default function Movies() {
                 <PosterCard key={movie.id} item={movie} type="movie" variant="grid" />
               ))}
             </div>
-
             {hasMore && (
               <div className="flex flex-col items-center mt-8 gap-2">
-                <p className="text-white/30 text-xs">
-                  {displayed.length} de {allItems.length}
-                </p>
+                <p className="text-white/30 text-xs">{displayed.length} de {allItems.length}</p>
                 <button
                   onClick={() => setDisplayLimit(prev => prev + PAGE_SIZE)}
                   className="px-6 py-2.5 bg-[#A855F7] hover:bg-[#9333EA] text-white text-sm font-bold rounded-xl transition-colors shadow-lg shadow-[#A855F7]/20"

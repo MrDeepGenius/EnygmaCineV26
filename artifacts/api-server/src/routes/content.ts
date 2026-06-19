@@ -26,6 +26,7 @@ import {
   getAnimeById,
   getHomeContent,
   searchContent,
+  getSectionBannerItems,
 } from "../lib/sheets";
 
 const router: IRouter = Router();
@@ -91,6 +92,17 @@ router.get("/content/anime/:id", async (req, res): Promise<void> => {
     return;
   }
   res.json(GetAnimeDetailResponse.parse(detail));
+});
+
+router.get("/content/banner", async (req, res): Promise<void> => {
+  const category = req.query.category as string;
+  const profile = req.query.profile as string | undefined;
+  if (!["movie", "serie", "anime"].includes(category)) {
+    res.status(400).json({ error: "Invalid category" });
+    return;
+  }
+  const items = await getSectionBannerItems(category as "movie" | "serie" | "anime", profile);
+  res.json(items);
 });
 
 router.get("/content/home", async (req, res): Promise<void> => {

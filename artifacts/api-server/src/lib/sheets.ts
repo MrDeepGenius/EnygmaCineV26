@@ -162,6 +162,73 @@ function filterSeriesByProfile(
   return items;
 }
 
+function shuffleAndPick<T>(arr: T[], n: number): T[] {
+  const copy = [...arr].sort(() => Math.random() - 0.5);
+  return copy.slice(0, Math.min(n, copy.length));
+}
+
+export async function getSectionBannerItems(
+  category: "movie" | "serie" | "anime",
+  profile?: string,
+): Promise<Array<Movie | SeriesParent>> {
+  if (category === "movie") {
+    const rows = await fetchSheet("movies");
+    let items: Movie[] = rows
+      .filter((r) => r["id_unico"] && r["titulo"])
+      .map((r) => ({
+        id: r["id_unico"],
+        titulo: r["titulo"] || "",
+        sinopsis: r["sinopsis"] || null,
+        posterUrl: r["poster_url"] || null,
+        backdropUrl: r["backdrop_url"] || null,
+        logoUrl: null,
+        urlReproduccion: r["url_reproduccion"] || null,
+        youtubeTrailer: r["youtube_trailer"] || null,
+        genero: r["genero"] || null,
+        año: r["año"] || null,
+        actores: r["actores"] || null,
+        vistas: r["vistas"] || null,
+        esVip: r["es_vip"]?.toLowerCase() === "true" || r["es_vip"] === "1",
+        enBanner: r["en_banner"]?.toLowerCase() === "true" || r["en_banner"] === "1",
+        tipo: r["tipo"] || null,
+        status: r["status"] || null,
+        valoracion: r["valoracion"] || null,
+        categoria: "movie" as const,
+      }));
+    items = filterByProfile(items, profile);
+    const withImage = items.filter((m) => m.backdropUrl || m.posterUrl);
+    const pool = withImage.length >= 8 ? withImage : items;
+    const picked = shuffleAndPick(pool, 8);
+    const logos = await Promise.all(
+      picked.map((m) => getLogoUrl(m.id, "movie").catch(() => null))
+    );
+    return picked.map((m, i) => ({ ...m, logoUrl: logos[i] ?? null }));
+  }
+
+  if (category === "serie") {
+    const { seriesList } = await buildSeriesAndEpisodes();
+    const items = filterSeriesByProfile(seriesList, profile);
+    const withImage = items.filter((s) => s.backdropUrl || s.posterUrl);
+    const pool = withImage.length >= 8 ? withImage : items;
+    const picked = shuffleAndPick(pool, 8);
+    const logos = await Promise.all(
+      picked.map((s) => getLogoUrl(s.id, "tv").catch(() => null))
+    );
+    return picked.map((s, i) => ({ ...s, logoUrl: logos[i] ?? null }));
+  }
+
+  // anime
+  const { animeList } = await buildAnimeAndEpisodes();
+  const items = filterSeriesByProfile(animeList, profile);
+  const withImage = items.filter((a) => a.backdropUrl || a.posterUrl);
+  const pool = withImage.length >= 8 ? withImage : items;
+  const picked = shuffleAndPick(pool, 8);
+  const logos = await Promise.all(
+    picked.map((a) => getLogoUrl(a.id, "tv").catch(() => null))
+  );
+  return picked.map((a, i) => ({ ...a, logoUrl: logos[i] ?? null }));
+}
+
 export async function getMovies(opts?: {
   profile?: string;
   section?: string;

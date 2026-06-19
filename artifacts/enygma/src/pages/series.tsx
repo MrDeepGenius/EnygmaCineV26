@@ -25,9 +25,7 @@ export default function SeriesPage() {
 
   return (
     <Layout>
-      {!isLoading && allItems.length > 0 && (
-        <SectionBanner items={allItems as any} />
-      )}
+      <SectionBanner category="serie" profile={profile || undefined} />
 
       <div className="max-w-screen-2xl mx-auto px-3 md:px-10 lg:px-16 xl:px-20 py-6 md:py-8">
         <div className="flex items-center justify-between gap-3 mb-5 md:mb-8">
@@ -61,7 +59,6 @@ export default function SeriesPage() {
                 <PosterCard key={serie.id} item={serie} type="serie" variant="grid" />
               ))}
             </div>
-
             {hasMore && (
               <div className="flex flex-col items-center mt-8 gap-2">
                 <p className="text-white/30 text-xs">{displayed.length} de {allItems.length}</p>
