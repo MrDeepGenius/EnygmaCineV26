@@ -14,6 +14,7 @@ interface VideoPlayerProps {
   tracks?: Track[];
   title: string;
   logoUrl?: string;
+  originalUrl?: string;
   onBack: () => void;
   episodes?: { label: string; onSelect: () => void; active: boolean }[];
 }
@@ -22,7 +23,7 @@ type BottomTab = "none" | "speed" | "quality" | "audio";
 
 const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
-export function VideoPlayer({ hlsUrl, tracks, title, logoUrl, onBack, episodes }: VideoPlayerProps) {
+export function VideoPlayer({ hlsUrl, tracks, title, logoUrl, originalUrl, onBack, episodes }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -336,13 +337,43 @@ export function VideoPlayer({ hlsUrl, tracks, title, logoUrl, onBack, episodes }
               <p className="text-white font-semibold text-sm truncate">{title}</p>
             )}
           </div>
-          <div className="flex items-center gap-3">
-            {castAvailable && (
-              <button onClick={castVideo} className="text-white/70 hover:text-white transition-colors">
-                <Cast className="w-5 h-5" />
+          <div className="flex items-center gap-2">
+            {/* Web Video Caster — abre la app con la URL original del sheets */}
+            {originalUrl && (
+              <button
+                onClick={() => {
+                  const encoded = encodeURIComponent(originalUrl);
+                  const encodedTitle = encodeURIComponent(title);
+                  const wvcUrl = `webvideocaster://cast?url=${encoded}&title=${encodedTitle}`;
+                  const playStoreUrl = "https://play.google.com/store/apps/details?id=com.instantbits.cast.webvideo";
+                  // Try to open the app; if not installed, redirect to Play Store after 1.5s
+                  const iframe = document.createElement("iframe");
+                  iframe.style.display = "none";
+                  iframe.src = wvcUrl;
+                  document.body.appendChild(iframe);
+                  const fallback = setTimeout(() => {
+                    document.body.removeChild(iframe);
+                    window.open(playStoreUrl, "_blank");
+                  }, 1500);
+                  const onBlur = () => { clearTimeout(fallback); document.body.removeChild(iframe); };
+                  window.addEventListener("blur", onBlur, { once: true });
+                }}
+                title="Abrir con Web Video Caster"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-[#A855F7]/30 border border-white/10 hover:border-[#A855F7]/50 text-white/70 hover:text-white transition-all"
+              >
+                <Tv2 className="w-4 h-4" />
+                <span className="text-[10px] font-bold uppercase tracking-wider hidden sm:inline">WVC</span>
               </button>
             )}
-            <button onClick={toggleFullscreen} className="text-white/70 hover:text-white transition-colors">
+            {/* Chromecast nativo (Remote Playback API) */}
+            <button
+              onClick={castAvailable ? castVideo : undefined}
+              title={castAvailable ? "Enviar a TV (Chromecast)" : "Chromecast no disponible en este navegador"}
+              className={`p-1.5 rounded-lg transition-colors ${castAvailable ? "text-white/70 hover:text-white hover:bg-white/10" : "text-white/20 cursor-default"}`}
+            >
+              <Cast className="w-5 h-5" />
+            </button>
+            <button onClick={toggleFullscreen} className="text-white/70 hover:text-white transition-colors p-1.5">
               {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
             </button>
           </div>
