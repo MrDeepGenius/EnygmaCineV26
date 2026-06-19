@@ -116,7 +116,7 @@ export default function Home() {
               videoUrl: "",
             })) as any}
             type="movie"
-            variant="landscape"
+            variant="portrait"
           />
         )}
 
@@ -126,7 +126,7 @@ export default function Home() {
             items={top10Items}
             type="movie"
             isNumbered={true}
-            variant="landscape"
+            variant="portrait"
           />
         )}
 
@@ -135,7 +135,7 @@ export default function Home() {
             title="Tendencias"
             items={content.trending || []}
             type="movie"
-            variant="landscape"
+            variant="portrait"
           />
         )}
 
@@ -144,7 +144,7 @@ export default function Home() {
             title="Populares en ENYGMA"
             items={content.recommended || []}
             type="movie"
-            variant="landscape"
+            variant="portrait"
           />
         )}
 
@@ -155,35 +155,35 @@ export default function Home() {
               title={section.title}
               items={section.items.map(toRowItem)}
               type="movie"
-              variant="landscape"
+              variant="portrait"
             />
           )
         ))}
 
         {!hidden.includes("latestMovies") && (
           <HorizontalRow
-            title="Ultimas Peliculas"
+            title="Últimas Películas"
             items={content.latestMovies || []}
             type="movie"
-            variant="landscape"
+            variant="portrait"
           />
         )}
 
         {!hidden.includes("latestSeries") && (
           <HorizontalRow
-            title="Ultimas Series"
+            title="Últimas Series"
             items={content.latestSeries || []}
             type="serie"
-            variant="landscape"
+            variant="portrait"
           />
         )}
 
         {!hidden.includes("latestAnime") && (
           <HorizontalRow
-            title="Ultimo Anime"
+            title="Último Anime"
             items={content.latestAnime || []}
             type="anime"
-            variant="landscape"
+            variant="portrait"
           />
         )}
       </div>

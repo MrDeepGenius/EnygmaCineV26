@@ -160,12 +160,12 @@ export function PosterCard({ item, rank, type, variant = "portrait" }: PosterCar
     );
   }
 
-  /* ─── PORTRAIT variant (default) ─── */
+  /* ─── PORTRAIT variant (default) — Netflix style ─── */
   return (
     <motion.div
-      whileHover={{ scale: 1.05, zIndex: 10 }}
-      transition={{ duration: 0.2 }}
-      className="relative group flex-shrink-0 w-[140px] sm:w-[180px] md:w-[220px] aspect-[2/3] rounded-md overflow-hidden bg-zinc-900 cursor-pointer ring-1 ring-white/10 hover:ring-[#A855F7]/60 shadow-lg"
+      whileHover={{ scale: 1.06, zIndex: 10 }}
+      transition={{ duration: 0.18, ease: "easeOut" }}
+      className="relative group flex-shrink-0 w-[100px] sm:w-[120px] md:w-[140px] aspect-[2/3] rounded-md overflow-hidden bg-zinc-900 cursor-pointer shadow-md"
     >
       <Link href={`/detail/${type}/${item.id}`} className="absolute inset-0 z-20" />
 
@@ -173,58 +173,56 @@ export function PosterCard({ item, rank, type, variant = "portrait" }: PosterCar
         <img
           src={item.posterUrl}
           alt={item.titulo}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-400 group-hover:scale-110"
           loading="lazy"
         />
       ) : (
-        <div className="w-full h-full flex items-center justify-center p-4 bg-zinc-800">
-          <span className="font-display font-bold text-sm text-white/70">{item.titulo}</span>
+        <div className="w-full h-full flex items-center justify-center p-2 bg-zinc-800">
+          <span className="font-bold text-xs text-white/50 text-center leading-tight">{item.titulo}</span>
         </div>
       )}
 
+      {/* Subtle gradient at bottom always */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+
+      {/* Favorite button */}
       <button
         onClick={handleFavorite}
-        className={`absolute top-2 right-2 z-30 w-7 h-7 rounded-full backdrop-blur-sm flex items-center justify-center transition-all
-          ${favorited ? "bg-black/60 opacity-100" : "bg-black/60 opacity-0 group-hover:opacity-100"}`}
+        className={`absolute top-1 right-1 z-30 w-6 h-6 rounded-full backdrop-blur-sm flex items-center justify-center transition-all
+          ${favorited ? "bg-black/70 opacity-100" : "bg-black/70 opacity-0 group-hover:opacity-100"}`}
       >
-        <Heart className={`w-3.5 h-3.5 ${favorited ? "text-[#A855F7] fill-[#A855F7]" : "text-white"}`} />
+        <Heart className={`w-3 h-3 ${favorited ? "text-[#A855F7] fill-[#A855F7]" : "text-white"}`} />
       </button>
 
+      {/* Rank number */}
       {rank && (
         <div
-          className="absolute -left-1 sm:-left-3 bottom-0 text-[90px] sm:text-[130px] font-bold leading-none tracking-tighter font-display z-10 pointer-events-none select-none"
+          className="absolute -left-1 bottom-0 text-[64px] sm:text-[80px] font-bold leading-none tracking-tighter font-display z-10 pointer-events-none select-none"
           style={{
             color: "#A855F7",
-            WebkitTextStroke: "3px #000",
-            textShadow: "0 0 20px rgba(229,9,20,0.7), 0 0 40px rgba(229,9,20,0.4), 2px 4px 8px rgba(0,0,0,0.9)",
+            WebkitTextStroke: "2px #000",
+            textShadow: "2px 4px 8px rgba(0,0,0,0.9)",
           }}
         >
           {rank}
         </div>
       )}
 
-      <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 z-10">
-        <h3 className="text-white font-bold text-sm sm:text-base line-clamp-2 mb-2 font-netflix">{item.titulo}</h3>
-        <div className="flex items-center justify-between">
-          <div className="flex gap-2">
-            <Link href={`/watch/${type}/${item.id}`} className="relative z-30">
-              <button className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center hover:bg-[#A855F7] hover:text-white transition-colors">
-                <Play className="w-4 h-4 ml-0.5 fill-current" />
-              </button>
-            </Link>
-            <Link href={`/detail/${type}/${item.id}`} className="relative z-30">
-              <button className="w-8 h-8 rounded-full border border-white/50 text-white flex items-center justify-center hover:border-white hover:bg-white/20 transition-colors">
-                <Info className="w-4 h-4" />
-              </button>
-            </Link>
-          </div>
-          <div className="text-xs text-white/50 font-medium">{item.año}</div>
+      {/* Hover overlay — play + info */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-end p-2 z-10">
+        <h3 className="text-white font-semibold text-[10px] sm:text-xs line-clamp-2 mb-1.5 leading-tight">{item.titulo}</h3>
+        <div className="flex items-center gap-1.5">
+          <Link href={`/watch/${type}/${item.id}`} className="relative z-30">
+            <button className="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center hover:bg-[#A855F7] hover:text-white transition-colors">
+              <Play className="w-2.5 h-2.5 ml-px fill-current" />
+            </button>
+          </Link>
+          <Link href={`/detail/${type}/${item.id}`} className="relative z-30">
+            <button className="w-6 h-6 rounded-full border border-white/50 text-white flex items-center justify-center hover:border-white hover:bg-white/10 transition-colors">
+              <Info className="w-2.5 h-2.5" />
+            </button>
+          </Link>
         </div>
-        {isSeries && (item as Series).totalSeasons && (
-          <div className="mt-2 text-xs text-[#A855F7] font-bold">
-            {(item as Series).totalSeasons} Temporadas
-          </div>
-        )}
       </div>
     </motion.div>
   );
