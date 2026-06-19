@@ -322,10 +322,11 @@ export function VideoPlayer({ hlsUrl, tracks, title, logoUrl, onBack, episodes }
           >
             <ArrowLeft className="w-6 h-6" />
           </button>
-          <div className="flex-1 min-w-0">
-            <p className="text-[#A855F7] text-[10px] font-bold uppercase tracking-[0.25em]">Estas mirando</p>
-            <p className="text-white font-semibold text-sm truncate">{title}</p>
-          </div>
+          <img
+            src={`${import.meta.env.BASE_URL}enygma-logo.png`}
+            alt="ENYGMA"
+            className="h-8 w-8 object-contain drop-shadow-[0_1px_6px_rgba(168,85,247,0.6)]"
+          />
           <div className="flex items-center gap-3">
             {castAvailable && (
               <button onClick={castVideo} className="text-white/70 hover:text-white transition-colors">
