@@ -17,9 +17,18 @@ export function SectionBanner({ items }: SectionBannerProps) {
   const [, setLocation] = useLocation();
 
   const featured = useMemo(() => {
-    const withBackdrop = items.filter((i) => i.backdropUrl || i.posterUrl);
-    const pool = withBackdrop.length >= 5 ? withBackdrop : items;
-    return pickRandom(pool, 5);
+    const withLogo = items.filter((i) => i.logoUrl && (i.backdropUrl || i.posterUrl));
+    const withBackdrop = items.filter((i) => !i.logoUrl && (i.backdropUrl || i.posterUrl));
+
+    const logoSlots = Math.min(withLogo.length, 5);
+    const fillSlots = 5 - logoSlots;
+
+    const picked = [
+      ...pickRandom(withLogo, logoSlots),
+      ...pickRandom(withBackdrop, fillSlots),
+    ].sort(() => Math.random() - 0.5);
+
+    return picked.length > 0 ? picked : pickRandom(items, 5);
   }, [items]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
