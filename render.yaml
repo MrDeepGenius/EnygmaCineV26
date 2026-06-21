@@ -3,26 +3,23 @@ services:
     name: enygma-api
     env: node
     region: oregon
-    plan: standard
+    plan: free
     healthCheckPath: /health
-    buildCommand: cd artifacts/api-server && npm install && npm run build
-    startCommand: cd artifacts/api-server && npm run start
+    buildCommand: pnpm install && cd artifacts/api-server && pnpm run build
+    startCommand: cd artifacts/api-server && pnpm run start
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 8000
-    maxInstances: 3
+        value: 10000
 
   - type: web
     name: enygma-frontend
     env: node
     region: oregon
-    plan: standard
-    buildCommand: cd artifacts/enygma && npm install && PORT=20693 BASE_PATH=/ npm run build
-    startCommand: cd artifacts/enygma && npm run preview -- --host 0.0.0.0 --port 3000
+    plan: free
+    buildCommand: pnpm install && cd artifacts/enygma && pnpm run build
+    startCommand: cd artifacts/enygma && pnpm run preview -- --host 0.0.0.0 --port 3000
     envVars:
-      - key: PORT
-        value: 20693
-      - key: BASE_PATH
-        value: /
+      - key: NODE_ENV
+        value: production
