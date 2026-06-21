@@ -19,7 +19,7 @@ services:
     region: oregon
     plan: free
     buildCommand: cd artifacts/enygma && pnpm install --frozen-lockfile && pnpm run build
-    startCommand: cd artifacts/enygma && pnpm run serve
+    startCommand: cd artifacts/enygma && npm start
     envVars:
       - key: NODE_ENV
         value: production
