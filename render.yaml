@@ -5,7 +5,7 @@ services:
     region: oregon
     plan: free
     healthCheckPath: /health
-    buildCommand: pnpm install --frozen-lockfile && pnpm run build
+    buildCommand: pnpm install --frozen-lockfile && cd artifacts/api-server && pnpm run build
     startCommand: cd artifacts/api-server && pnpm run start
     envVars:
       - key: NODE_ENV
@@ -23,3 +23,7 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: PORT
+        value: 3000
+      - key: BASE_PATH
+        value: /
