@@ -18,7 +18,7 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: pnpm install --frozen-lockfile && cd artifacts/enygma && pnpm run build
+    buildCommand: cd artifacts/enygma && pnpm install --frozen-lockfile && pnpm run build
     startCommand: cd artifacts/enygma && pnpm run preview -- --host 0.0.0.0 --port 3000
     envVars:
       - key: NODE_ENV
