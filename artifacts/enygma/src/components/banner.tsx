@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Movie } from "@workspace/api-client-react";
@@ -10,16 +10,35 @@ interface BannerProps {
 export function Banner({ items }: BannerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [, setLocation] = useLocation();
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
 
   const currentItem = items[currentIndex] ?? items[0];
 
-  useEffect(() => {
-    if (!items || items.length === 0) return;
-    const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % items.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [items]);
+  // Detectar swipe
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.changedTouches[0].screenX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    touchEndX.current = e.changedTouches[0].screenX;
+    handleSwipe();
+  };
+
+  const handleSwipe = () => {
+    const distance = touchStartX.current - touchEndX.current;
+    const threshold = 50; // mínimo de pixels para considerar un swipe
+
+    if (Math.abs(distance) > threshold) {
+      if (distance > 0) {
+        // Swipe a la izquierda → siguiente item
+        setCurrentIndex((prev) => (prev + 1) % items.length);
+      } else {
+        // Swipe a la derecha → item anterior
+        setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
+      }
+    }
+  };
 
   if (!items || items.length === 0) return null;
 
@@ -33,13 +52,15 @@ export function Banner({ items }: BannerProps) {
     setLocation(`/detail/${detailType}/${currentItem.id}`);
   };
 
-  const imageUrl = currentItem.posterUrl || currentItem.backdropUrl;
+  const imageUrl = currentItem.backdropUrl || currentItem.posterUrl;
 
   return (
     <div
       className="relative w-full cursor-pointer select-none -mt-14 md:-mt-16"
       style={{ height: "100svh" }}
       onClick={handleClick}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       <AnimatePresence mode="wait">
         <motion.div

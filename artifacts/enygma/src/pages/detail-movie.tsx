@@ -289,14 +289,13 @@ export default function MovieDetail() {
             </div>
             <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">
               {recommendations.slice(0, 10).map((rec) => (
-                <button
+                <div
                   key={rec.id}
-                  onClick={() => setLocation(`/detail/movie/${rec.id}`)}
-                  className="flex-shrink-0 w-36 group text-left"
+                  className="flex-shrink-0 w-36 text-left pointer-events-none"
                 >
                   <div className="relative aspect-video rounded-xl overflow-hidden bg-zinc-800 mb-2">
                     {rec.posterPath ? (
-                      <img src={rec.posterPath} alt={rec.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      <img src={rec.posterPath} alt={rec.title} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full bg-zinc-800" />
                     )}
@@ -308,7 +307,7 @@ export default function MovieDetail() {
                     )}
                   </div>
                   <p className="text-white/70 text-[11px] font-medium line-clamp-2 leading-tight">{rec.title}</p>
-                </button>
+                </div>
               ))}
             </div>
           </div>

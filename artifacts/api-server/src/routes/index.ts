@@ -6,6 +6,7 @@ import tmdbRouter from "./tmdb-route";
 import resolveRouter from "./resolve";
 import hlsProxyRouter from "./hls-proxy";
 import adminRouter from "./admin";
+import analyticsRouter from "./analytics";
 
 const router: IRouter = Router();
 
@@ -16,5 +17,6 @@ router.use(tmdbRouter);
 router.use(resolveRouter);
 router.use(hlsProxyRouter);
 router.use(adminRouter);
+router.use(analyticsRouter);
 
 export default router;

@@ -185,9 +185,14 @@ export function VideoPlayer({ hlsUrl, tracks, title, logoUrl, originalUrl, onBac
   const setPlaybackSpeed = (s: number) => { const v = videoRef.current; if (v) v.playbackRate = s; setSpeed(s); setBottomTab("none"); };
 
   const castVideo = async () => {
-    const video = videoRef.current;
-    if (!video || !("remote" in video)) return;
-    try { await (video as HTMLVideoElement & { remote: { prompt: () => Promise<void> } }).remote.prompt(); } catch {}
+    if (!originalUrl) {
+      alert("No hay URL para enviar al TV");
+      return;
+    }
+
+    // Usar el esquema wvc-x-callback:// que es el correcto
+    const wvcUrl = `wvc-x-callback://open?url=${encodeURIComponent(originalUrl)}`;
+    window.location.href = wvcUrl;
   };
 
   const fmt = (s: number) => {

@@ -14,6 +14,9 @@ interface HorizontalRowProps {
 export function HorizontalRow({ title, items, type, isNumbered = false, variant = "portrait" }: HorizontalRowProps) {
   const rowRef = useRef<HTMLDivElement>(null);
 
+  // Si es numbered (Top 10), usar variant "top10"
+  const effectiveVariant = isNumbered ? "top10" : variant;
+
   const scroll = (direction: "left" | "right") => {
     if (rowRef.current) {
       const { scrollLeft, clientWidth } = rowRef.current;
@@ -48,7 +51,7 @@ export function HorizontalRow({ title, items, type, isNumbered = false, variant 
                 item={item}
                 rank={isNumbered ? index + 1 : undefined}
                 type={type}
-                variant={variant}
+                variant={effectiveVariant}
               />
             </div>
           ))}

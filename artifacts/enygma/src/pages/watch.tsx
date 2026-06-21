@@ -13,6 +13,7 @@ import {
 import { useState, useEffect } from "react";
 import { VideoPlayer } from "@/components/video-player";
 import { useWatchProgress } from "@/lib/use-watch-progress";
+import { useAnalytics } from "@/lib/use-analytics";
 
 function toEmbedUrl(url: string): string {
   if (!url) return "";
@@ -43,6 +44,7 @@ export default function Watch() {
   const id = params?.id;
   const [selectedEpisode, setSelectedEpisode] = useState(0);
   const { addProgress, getProgress } = useWatchProgress();
+  const { trackContent } = useAnalytics();
 
   const { data: movie } = useGetMovie(id || "", {
     query: { enabled: category === "movie" && !!id, queryKey: getGetMovieQueryKey(id || "") },
@@ -93,8 +95,11 @@ export default function Watch() {
       progress: existing?.progress ?? 0.05,
       episodio: selectedEpisode > 0 ? selectedEpisode + 1 : undefined,
     });
+    
+    // Track content being watched
+    trackContent(id, title, category as "movie" | "serie" | "anime");
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, title]);
+  }, [id, title, category, selectedEpisode]);
 
   const shouldResolve = canExtract(rawUrl);
 

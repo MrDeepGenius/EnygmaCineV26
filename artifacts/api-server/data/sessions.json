@@ -1,0 +1,54 @@
+[
+  {
+    "id": "test_session_123",
+    "ip": "::1",
+    "country": "Unknown",
+    "city": "Unknown",
+    "timestamp": 1782065034882,
+    "lastActivity": 1782065034882,
+    "currentContent": {
+      "id": "spiderman",
+      "title": "Spider-Man",
+      "type": "movie"
+    }
+  },
+  {
+    "id": "session_1782064912766_aol0rlypv",
+    "ip": "::1",
+    "country": "Unknown",
+    "city": "Unknown",
+    "timestamp": 1782065446566,
+    "lastActivity": 1782081700413,
+    "currentContent": {
+      "id": "229958",
+      "title": "Aema (2025)",
+      "type": "serie"
+    }
+  },
+  {
+    "id": "session_1782065515167_2ty6xs12y",
+    "ip": "::1",
+    "country": "Unknown",
+    "city": "Unknown",
+    "timestamp": 1782065518542,
+    "lastActivity": 1782065975529,
+    "currentContent": {
+      "id": "1293162",
+      "title": "Thieves Highway",
+      "type": "movie"
+    }
+  },
+  {
+    "id": "session_1782069208870_cleyb8k5f",
+    "ip": "::1",
+    "country": "Unknown",
+    "city": "Unknown",
+    "timestamp": 1782069213617,
+    "lastActivity": 1782070960378,
+    "currentContent": {
+      "id": "62428",
+      "title": "Los Caballeros del Zodiaco: Alma de Oro (2015)",
+      "type": "anime"
+    }
+  }
+]

@@ -1,5 +1,7 @@
 import { logger } from "./logger";
 import { getLogoUrl } from "./tmdb";
+import fs from "fs";
+import path from "path";
 
 const SHEET_URLS = {
   movies:
@@ -11,6 +13,7 @@ const SHEET_URLS = {
 };
 
 const CACHE_TTL_MS = 5 * 60 * 1000;
+const CATALOG_OVERRIDES_PATH = path.join(process.cwd(), "data", "catalog-overrides.json");
 
 interface CacheEntry<T> {
   data: T;
@@ -18,6 +21,14 @@ interface CacheEntry<T> {
 }
 
 const cache = new Map<string, CacheEntry<unknown>>();
+
+function readCatalogOverrides() {
+  try {
+    return JSON.parse(fs.readFileSync(CATALOG_OVERRIDES_PATH, "utf-8"));
+  } catch {
+    return { deletedItems: [], urlOverrides: {} };
+  }
+}
 
 function parseCSVLine(line: string): string[] {
   const result: string[] = [];
@@ -238,29 +249,36 @@ export async function getMovies(opts?: {
   offset?: number;
 }): Promise<{ items: Movie[]; total: number }> {
   const rows = await fetchSheet("movies");
+  const overrides = readCatalogOverrides();
+  const deletedIds = new Set(overrides.deletedItems.filter((d: any) => d.type === "movie").map((d: any) => d.id));
 
   let items: Movie[] = rows
-    .filter((r) => r["id_unico"] && r["titulo"])
-    .map((r) => ({
-      id: r["id_unico"],
-      titulo: r["titulo"] || "",
-      sinopsis: r["sinopsis"] || null,
-      posterUrl: r["poster_url"] || null,
-      backdropUrl: r["backdrop_url"] || null,
-      logoUrl: null,
-      urlReproduccion: r["url_reproduccion"] || null,
-      youtubeTrailer: r["youtube_trailer"] || null,
-      genero: r["genero"] || null,
-      año: r["año"] || null,
-      actores: r["actores"] || null,
-      vistas: r["vistas"] || null,
-      esVip: r["es_vip"]?.toLowerCase() === "true" || r["es_vip"] === "1",
-      enBanner: r["en_banner"]?.toLowerCase() === "true" || r["en_banner"] === "1",
-      tipo: r["tipo"] || null,
-      status: r["status"] || null,
-      valoracion: r["valoracion"] || null,
-      categoria: "movie" as const,
-    }));
+    .filter((r) => r["id_unico"] && r["titulo"] && !deletedIds.has(r["id_unico"]))
+    .map((r) => {
+      const itemId = r["id_unico"];
+      const key = `movie/${itemId}`;
+      const urlOverride = overrides.urlOverrides[key];
+      return {
+        id: itemId,
+        titulo: r["titulo"] || "",
+        sinopsis: r["sinopsis"] || null,
+        posterUrl: r["poster_url"] || null,
+        backdropUrl: r["backdrop_url"] || null,
+        logoUrl: null,
+        urlReproduccion: urlOverride || r["url_reproduccion"] || null,
+        youtubeTrailer: r["youtube_trailer"] || null,
+        genero: r["genero"] || null,
+        año: r["año"] || null,
+        actores: r["actores"] || null,
+        vistas: r["vistas"] || null,
+        esVip: r["es_vip"]?.toLowerCase() === "true" || r["es_vip"] === "1",
+        enBanner: r["en_banner"]?.toLowerCase() === "true" || r["en_banner"] === "1",
+        tipo: r["tipo"] || null,
+        status: r["status"] || null,
+        valoracion: r["valoracion"] || null,
+        categoria: "movie" as const,
+      };
+    });
 
   const section = opts?.section;
 
@@ -348,6 +366,8 @@ async function buildSeriesAndEpisodes(): Promise<{
   episodeMap: Map<string, Episode[]>;
 }> {
   const rows = await fetchSheet("series");
+  const overrides = readCatalogOverrides();
+  const deletedIds = new Set(overrides.deletedItems.filter((d: any) => d.type === "serie").map((d: any) => d.id));
 
   const parentRows = rows.filter((r) => r["tipo"] === "serie" && r["id"]);
   const episodeRows = rows.filter((r) => r["tipo"] === "episodio" && r["serie_id"]);
@@ -357,18 +377,20 @@ async function buildSeriesAndEpisodes(): Promise<{
     const sid = ep["serie_id"];
     if (!sid) continue;
     if (!episodeMap.has(sid)) episodeMap.set(sid, []);
+    const key = `serie/${sid}`;
+    const urlOverride = overrides.urlOverrides[key];
     episodeMap.get(sid)!.push({
       serieId: sid,
       temporada: ep["temporada"] || null,
       episodio: ep["episodio"] || null,
       tituloEpisodio: ep["titulo_episodio"] || "",
-      urlReproduccion: ep["url_reproduccion"] || null,
+      urlReproduccion: urlOverride || ep["url_reproduccion"] || null,
       urlReproduccion2: null,
     });
   }
 
   const seriesList: SeriesParent[] = parentRows
-    .filter((r) => r["visible"]?.toLowerCase() !== "false")
+    .filter((r) => r["visible"]?.toLowerCase() !== "false" && !deletedIds.has(r["id"]))
     .map((r) => {
       const sid = r["id"];
       const eps = episodeMap.get(sid) || [];
@@ -398,9 +420,11 @@ async function buildAnimeAndEpisodes(): Promise<{
   episodeMap: Map<string, Episode[]>;
 }> {
   const rows = await fetchSheet("anime");
+  const overrides = readCatalogOverrides();
+  const deletedIds = new Set(overrides.deletedItems.filter((d: any) => d.type === "anime").map((d: any) => d.id));
 
   const validRows = rows.filter(
-    (r) => r["tipo"] === "anime" && r["id"] && r["titulo"] !== "titulo",
+    (r) => r["tipo"] === "anime" && r["id"] && r["titulo"] !== "titulo" && !deletedIds.has(r["id"]),
   );
 
   const episodeMap = new Map<string, Episode[]>();
@@ -430,12 +454,14 @@ async function buildAnimeAndEpisodes(): Promise<{
 
     if (r["episodio"]) {
       if (!episodeMap.has(animeId)) episodeMap.set(animeId, []);
+      const key = `anime/${animeId}`;
+      const urlOverride = overrides.urlOverrides[key];
       episodeMap.get(animeId)!.push({
         serieId: animeId,
         temporada: r["temporada"] || null,
         episodio: r["episodio"] || null,
         tituloEpisodio: r["titulo_episodio"] || "",
-        urlReproduccion: r["url_reproduccion"] || null,
+        urlReproduccion: urlOverride || r["url_reproduccion"] || null,
         urlReproduccion2: r["url_reproduccion_2"] || null,
       });
     }

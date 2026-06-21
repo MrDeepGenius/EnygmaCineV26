@@ -24,7 +24,7 @@ export default function AnimePage() {
   const hasMore = displayLimit < allItems.length;
 
   return (
-    <Layout>
+    <Layout fullBleedHeader>
       <SectionBanner category="anime" profile={profile || undefined} />
 
       <div className="max-w-screen-2xl mx-auto px-3 md:px-10 lg:px-16 xl:px-20 py-6 md:py-8">

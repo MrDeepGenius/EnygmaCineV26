@@ -5,8 +5,15 @@ import { useProfile } from "@/lib/profile-context";
 import { useFavorites } from "@/lib/use-favorites";
 import { Button } from "@/components/ui/button";
 import { useInstallPrompt } from "@/lib/use-install-prompt";
+import { EnygbotChat } from "@/components/enygbot-chat";
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export function Layout({
+  children,
+  fullBleedHeader = false,
+}: {
+  children: React.ReactNode;
+  fullBleedHeader?: boolean;
+}) {
   const [scrolled, setScrolled] = useState(false);
   const [location, setLocation] = useLocation();
   const { profile } = useProfile();
@@ -146,7 +153,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </header>
 
       {/* Main content */}
-      <main className="flex-1 w-full pt-14 md:pt-16 pb-20 md:pb-12">
+      <main
+        className={`flex-1 w-full pb-20 md:pb-12 ${
+          fullBleedHeader ? "pt-0" : "pt-14 md:pt-16"
+        }`}
+      >
         {children}
       </main>
 
@@ -245,6 +256,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </button>
         )}
       </footer>
+
+      {/* ENYGBOT Chat */}
+      <EnygbotChat />
     </div>
   );
 }

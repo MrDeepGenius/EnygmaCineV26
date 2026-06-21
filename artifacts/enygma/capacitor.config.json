@@ -1,0 +1,16 @@
+{
+  "appId": "com.enygma.app",
+  "appName": "ENYGMA",
+  "webDir": "dist/public",
+  "server": {
+    "androidScheme": "https",
+    "url": "",
+    "cleartext": true
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": true,
+      "showSpinner": false
+    }
+  }
+}

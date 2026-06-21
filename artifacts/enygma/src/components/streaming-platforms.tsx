@@ -18,10 +18,11 @@ const ALL_PLATFORMS: Platform[] = [
   { name: "Star+",       letter: "S+", bg: "#C01EFF", letterColor: "#fff" },
 ];
 
-function seededRandom(seed: string): () => number {
+function seededRandom(seed: string | undefined): () => number {
   let h = 0;
-  for (let i = 0; i < seed.length; i++) {
-    h = (Math.imul(31, h) + seed.charCodeAt(i)) | 0;
+  const seedStr = seed || "default";
+  for (let i = 0; i < seedStr.length; i++) {
+    h = (Math.imul(31, h) + seedStr.charCodeAt(i)) | 0;
   }
   return () => {
     h ^= h >>> 16;

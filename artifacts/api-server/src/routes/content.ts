@@ -126,4 +126,62 @@ router.get("/content/search", async (req, res): Promise<void> => {
   res.json(SearchContentResponse.parse(results));
 });
 
+router.post("/content/chat", async (req, res): Promise<void> => {
+  const { message } = req.body;
+  if (!message || typeof message !== "string") {
+    res.status(400).json({ error: "Message is required" });
+    return;
+  }
+
+  try {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      console.error("GEMINI_API_KEY not found in environment");
+      res.status(500).json({ error: "API key not configured" });
+      return;
+    }
+
+    console.log("Sending message to Gemini with new key");
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Eres ENYGBOT, un asistente amable de recomendaciones de películas. 
+El usuario te dice: "${message}"
+Responde de forma conversacional y breve (máximo 2 líneas). Si pide recomendaciones, sugiere géneros o tipos de contenido.`,
+                },
+              ],
+            },
+          ],
+        }),
+      }
+    );
+
+    console.log("Gemini response status:", response.status);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error("Gemini API error:", response.status, errorData);
+      res.status(500).json({ error: `Gemini error: ${response.status}` });
+      return;
+    }
+
+    const data = await response.json();
+    console.log("Gemini response data:", JSON.stringify(data).substring(0, 200));
+
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "No pude procesar tu solicitud.";
+    res.json({ reply });
+  } catch (error) {
+    console.error("Chat error:", error);
+    res.status(500).json({ error: String(error) });
+  }
+});
+
 export default router;

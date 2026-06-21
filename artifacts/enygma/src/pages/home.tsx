@@ -1,6 +1,7 @@
 import { useGetHomeContent } from "@workspace/api-client-react";
 import { useProfile } from "@/lib/profile-context";
 import { useFavorites } from "@/lib/use-favorites";
+import { useAnalytics } from "@/lib/use-analytics";
 import { Layout } from "@/components/layout";
 import { Banner } from "@/components/banner";
 import { HorizontalRow } from "@/components/horizontal-row";
@@ -15,6 +16,7 @@ interface AdminItem {
   tipo: "movie" | "serie" | "anime";
   posterUrl: string | null;
   backdropUrl: string | null;
+  logoUrl?: string | null;
   year?: string;
   tmdbId?: number;
   overview?: string;
@@ -34,6 +36,7 @@ function toRowItem(item: AdminItem) {
     categoria: item.tipo,
     posterUrl: item.posterUrl,
     backdropUrl: item.backdropUrl,
+    logoUrl: item.logoUrl,
     year: item.year || "",
     sinopsis: item.overview || "",
     tmdbId: item.tmdbId,
@@ -43,6 +46,7 @@ function toRowItem(item: AdminItem) {
 export default function Home() {
   const { profile } = useProfile();
   const { favorites } = useFavorites();
+  const { trackContent } = useAnalytics();
   const [adminConfig, setAdminConfig] = useState<AdminConfig | null>(null);
 
   const { data: content, isLoading } = useGetHomeContent(
@@ -54,6 +58,16 @@ export default function Home() {
       .then((r) => r.json())
       .then((d: AdminConfig) => setAdminConfig(d))
       .catch(() => setAdminConfig(null));
+
+    // Recargar config cada 5 segundos para que los cambios del admin se vean en tiempo real
+    const interval = setInterval(() => {
+      fetch(`${BASE}/api/admin/config`)
+        .then((r) => r.json())
+        .then((d: AdminConfig) => setAdminConfig(d))
+        .catch(() => {});
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
   if (isLoading) {

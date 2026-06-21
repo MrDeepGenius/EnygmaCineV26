@@ -8,7 +8,7 @@ interface PosterCardProps {
   item: Movie | Series;
   rank?: number;
   type: "movie" | "serie" | "anime";
-  variant?: "portrait" | "landscape" | "grid";
+  variant?: "portrait" | "landscape" | "grid" | "top10";
 }
 
 export function PosterCard({ item, rank, type, variant = "portrait" }: PosterCardProps) {
@@ -161,11 +161,80 @@ export function PosterCard({ item, rank, type, variant = "portrait" }: PosterCar
   }
 
   /* ─── PORTRAIT variant (default) — Netflix style ─── */
+  if (variant === "top10") {
+    return (
+      <motion.div
+        whileHover={{ scale: 1.06, zIndex: 10 }}
+        transition={{ duration: 0.18, ease: "easeOut" }}
+        className="relative group flex-shrink-0 w-[140px] sm:w-[170px] md:w-[200px] lg:w-[220px] aspect-[2/3] rounded-md overflow-hidden bg-zinc-900 cursor-pointer shadow-lg"
+      >
+        <Link href={`/detail/${type}/${item.id}`} className="absolute inset-0 z-20" />
+
+        {item.posterUrl ? (
+          <img
+            src={item.posterUrl}
+            alt={item.titulo}
+            className="w-full h-full object-cover transition-transform duration-400 group-hover:scale-110"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center p-2 bg-zinc-800">
+            <span className="font-bold text-xs text-white/50 text-center leading-tight">{item.titulo}</span>
+          </div>
+        )}
+
+        {/* Subtle gradient at bottom always */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+
+        {/* Favorite button */}
+        <button
+          onClick={handleFavorite}
+          className={`absolute top-2 right-2 z-30 w-7 h-7 rounded-full backdrop-blur-sm flex items-center justify-center transition-all
+            ${favorited ? "bg-black/70 opacity-100" : "bg-black/70 opacity-0 group-hover:opacity-100"}`}
+        >
+          <Heart className={`w-3.5 h-3.5 ${favorited ? "text-[#A855F7] fill-[#A855F7]" : "text-white"}`} />
+        </button>
+
+        {/* Rank number — bigger for top 10 */}
+        {rank && (
+          <div
+            className="absolute -left-3 -bottom-2 text-[120px] sm:text-[140px] md:text-[160px] font-bold leading-none tracking-tighter font-display z-10 pointer-events-none select-none"
+            style={{
+              color: "#A855F7",
+              WebkitTextStroke: "3px #000",
+              textShadow: "0 0 30px rgba(168,85,247,0.8), 4px 8px 16px rgba(0,0,0,0.95)",
+            }}
+          >
+            {rank}
+          </div>
+        )}
+
+        {/* Hover overlay — play + info */}
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-end p-2 z-10">
+          <h3 className="text-white font-semibold text-[11px] sm:text-xs line-clamp-2 mb-2 leading-tight">{item.titulo}</h3>
+          <div className="flex items-center gap-2">
+            <Link href={`/watch/${type}/${item.id}`} className="relative z-30">
+              <button className="w-7 h-7 rounded-full bg-white text-black flex items-center justify-center hover:bg-[#A855F7] hover:text-white transition-colors">
+                <Play className="w-3 h-3 ml-px fill-current" />
+              </button>
+            </Link>
+            <Link href={`/detail/${type}/${item.id}`} className="relative z-30">
+              <button className="w-7 h-7 rounded-full border border-white/50 text-white flex items-center justify-center hover:border-white hover:bg-white/10 transition-colors">
+                <Info className="w-3 h-3" />
+              </button>
+            </Link>
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
+
+  /* ─── PORTRAIT variant (default) — Netflix style ─── */
   return (
     <motion.div
       whileHover={{ scale: 1.06, zIndex: 10 }}
       transition={{ duration: 0.18, ease: "easeOut" }}
-      className="relative group flex-shrink-0 w-[100px] sm:w-[120px] md:w-[140px] aspect-[2/3] rounded-md overflow-hidden bg-zinc-900 cursor-pointer shadow-md"
+      className="relative group flex-shrink-0 w-[120px] sm:w-[150px] md:w-[170px] lg:w-[190px] aspect-[2/3] rounded-md overflow-hidden bg-zinc-900 cursor-pointer shadow-lg"
     >
       <Link href={`/detail/${type}/${item.id}`} className="absolute inset-0 z-20" />
 
