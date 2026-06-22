@@ -26,6 +26,6 @@ COPY --from=builder /app/artifacts/enygma/dist/public ./
 RUN npm install -g http-server
 
 EXPOSE 3000
-# Use -P to use pushState for SPA routing (fallback to index.html)
-CMD ["http-server", "-p", "3000", "--cors", "-P", "/index.html"]
+# Use -r to rewrite requests to index.html for SPA routing
+CMD ["http-server", "-p", "3000", "--cors", "-r", "index.html"]
 
