@@ -36,14 +36,4 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
 
-// In production, serve the frontend static files and handle SPA routing
-if (process.env.NODE_ENV === "production") {
-  const staticDir = path.join(__dirname, "public");
-  app.use(express.static(staticDir));
-  // Fallback to index.html for SPA routing
-  app.use((_req, res) => {
-    res.sendFile(path.join(staticDir, "index.html"));
-  });
-}
-
 export default app;
