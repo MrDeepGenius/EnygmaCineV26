@@ -1,19 +1,10 @@
 services:
   - type: web
-    name: enygma-frontend
-    env: node
+    name: enygma
+    env: docker
     region: oregon
     plan: free
-    buildCommand: |
-      cd artifacts/enygma && \
-      npm install --legacy-peer-deps && \
-      npm run build
-    startCommand: cd artifacts/enygma && npm start
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 3000
-      - key: BASE_PATH
-        value: /
 
