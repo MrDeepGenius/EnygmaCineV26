@@ -3,28 +3,30 @@ FROM node:20-slim AS builder
 
 WORKDIR /app
 
-# Copiar solo enygma
-COPY artifacts/enygma .
+# Copy entire workspace (needed for pnpm monorepo)
+COPY . .
 
-# Instalar dependencias (incluyendo devDependencies para el build)
-RUN npm install --legacy-peer-deps
+# Install pnpm
+RUN npm install -g pnpm
 
-# Build
-RUN npm run build
+# Install dependencies using pnpm (no frozen lockfile since we have pnpm-lock.yaml)
+RUN pnpm install
+
+# Build enygma app
+RUN pnpm -F @workspace/enygma build
 
 # Stage 2: Runtime
 FROM node:20-slim
 
 WORKDIR /app
 
-# Copiar el built output desde stage 1
-COPY --from=builder /app/dist/public ./dist/public
-COPY --from=builder /app/package*.json ./
+# Install pnpm
+RUN npm install -g pnpm
 
-# Instalar solo production dependencies
-RUN npm install --legacy-peer-deps --production
+# Copy the entire workspace from builder (needed to run the app)
+COPY --from=builder /app .
 
 # Start
 EXPOSE 3000
-CMD ["npm", "start"]
+CMD ["pnpm", "-F", "@workspace/enygma", "start"]
 
