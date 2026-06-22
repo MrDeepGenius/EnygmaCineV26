@@ -1,12 +1,12 @@
 # Stage 1: Build
 FROM node:20-slim AS builder
 
-WORKDIR /app/artifacts/enygma
+WORKDIR /app
 
-# Copy only enygma
-COPY artifacts/enygma .
-# Copy tsconfig.base.json from root
-COPY tsconfig.base.json ../../
+# Copy entire workspace structure (needed for paths and references)
+COPY . .
+
+WORKDIR /app/artifacts/enygma
 
 # Install dependencies
 RUN npm install --legacy-peer-deps
