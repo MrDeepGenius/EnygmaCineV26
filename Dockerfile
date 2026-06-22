@@ -9,15 +9,11 @@ COPY . .
 # Install pnpm
 RUN npm install -g pnpm
 
-# Install all dependencies (workspace + enygma)
+# Install all workspace dependencies
 RUN pnpm install --no-frozen-lockfile
 
-# Install enygma specific dependencies just to be safe
-WORKDIR /app/artifacts/enygma
-RUN pnpm install --no-frozen-lockfile
-
-# Build enygma app
-RUN pnpm run build
+# Build enygma from root (this respects the workspace structure)
+RUN pnpm run -C artifacts/enygma build
 
 # Stage 2: Runtime
 FROM node:20-slim
