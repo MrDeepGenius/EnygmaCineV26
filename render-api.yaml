@@ -15,8 +15,8 @@ services:
     env: node
     region: virginia
     plan: free
-    buildCommand: npm install -g pnpm && pnpm install && pnpm -F @workspace/api-server build
-    startCommand: pnpm -F @workspace/api-server start
+    buildCommand: npx pnpm install && npx pnpm -F @workspace/api-server build
+    startCommand: npx pnpm -F @workspace/api-server start
     envVars:
       - key: NODE_ENV
         value: production
