@@ -1,13 +1,21 @@
 services:
   - type: web
+    name: enygma
+    env: docker
+    region: virginia
+    plan: free
+    dockerfile: ./Dockerfile
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+  - type: web
     name: enygma-api
     env: node
-    region: oregon
+    region: virginia
     plan: free
-    buildCommand: |
-      cd artifacts/api-server && \
-      npm install --legacy-peer-deps && \
-      npm run build
+    buildCommand: cd artifacts/api-server && npm install --legacy-peer-deps && npm run build
     startCommand: cd artifacts/api-server && npm start
     envVars:
       - key: NODE_ENV
