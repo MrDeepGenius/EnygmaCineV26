@@ -5,8 +5,8 @@ services:
     region: oregon
     plan: free
     healthCheckPath: /health
-    buildCommand: cd artifacts/api-server && npm install --omit=dev && npm run build
-    startCommand: cd artifacts/api-server && npm run start
+    buildCommand: npm install --legacy-peer-deps --no-optional && npm run build --prefix=artifacts/api-server
+    startCommand: npm run start --prefix=artifacts/api-server
     envVars:
       - key: NODE_ENV
         value: production
@@ -18,8 +18,8 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: cd artifacts/enygma && npm install --omit=dev && npm run build
-    startCommand: cd artifacts/enygma && npm start
+    buildCommand: npm install --legacy-peer-deps --no-optional && npm run build --prefix=artifacts/enygma
+    startCommand: npm start --prefix=artifacts/enygma
     envVars:
       - key: NODE_ENV
         value: production
