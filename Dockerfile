@@ -9,8 +9,8 @@ COPY . .
 # Install pnpm
 RUN npm install -g pnpm
 
-# Install dependencies using pnpm (no frozen lockfile since we have pnpm-lock.yaml)
-RUN pnpm install
+# Install dependencies including devDependencies
+RUN pnpm install --prod=false
 
 # Build enygma app
 RUN pnpm -F @workspace/enygma build
