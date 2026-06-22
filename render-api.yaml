@@ -12,11 +12,11 @@ services:
 
   - type: web
     name: enygma-api
-    env: node
+    env: docker
     region: virginia
     plan: free
-    buildCommand: npx pnpm install && npx pnpm -F @workspace/api-server build
-    startCommand: npx pnpm -F @workspace/api-server start
+    dockerfile: ./Dockerfile.api
+    dockerfilePath: ./Dockerfile.api
     envVars:
       - key: NODE_ENV
         value: production
