@@ -3,17 +3,21 @@ FROM node:20-slim AS builder
 
 WORKDIR /app
 
-# Copy entire workspace (needed for pnpm monorepo)
+# Copy entire workspace
 COPY . .
 
 # Install pnpm
 RUN npm install -g pnpm
 
-# Install dependencies including devDependencies
-RUN pnpm install --prod=false
+# Install all dependencies (workspace + enygma)
+RUN pnpm install --no-frozen-lockfile
+
+# Install enygma specific dependencies just to be safe
+WORKDIR /app/artifacts/enygma
+RUN pnpm install --no-frozen-lockfile
 
 # Build enygma app
-RUN pnpm -F @workspace/enygma build
+RUN pnpm run build
 
 # Stage 2: Runtime
 FROM node:20-slim
