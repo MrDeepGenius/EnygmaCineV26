@@ -5,7 +5,7 @@ services:
     region: oregon
     plan: free
     healthCheckPath: /health
-    buildCommand: npm install && cd artifacts/api-server && npm run build
+    buildCommand: npm uninstall -g pnpm || true && npm install && cd artifacts/api-server && npm run build
     startCommand: cd artifacts/api-server && npm run start
     envVars:
       - key: NODE_ENV
@@ -18,7 +18,7 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: cd artifacts/enygma && npm install && npm run build
+    buildCommand: npm uninstall -g pnpm || true && cd artifacts/enygma && npm install && npm run build
     startCommand: cd artifacts/enygma && npm start
     envVars:
       - key: NODE_ENV
