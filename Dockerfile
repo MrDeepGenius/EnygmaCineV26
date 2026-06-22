@@ -20,11 +20,11 @@ FROM node:20-slim
 WORKDIR /app
 
 # Copy only the compiled dist folder
-COPY --from=builder /app/artifacts/enygma/dist/public ./public
+COPY --from=builder /app/artifacts/enygma/dist/public ./
 
-# Install serve to run static files
-RUN npm install -g serve
+# Install http-server which doesn't add restrictive CSP headers
+RUN npm install -g http-server
 
 EXPOSE 3000
-CMD ["serve", "-s", "public", "-l", "3000"]
+CMD ["http-server", "-p", "3000", "--cors"]
 
