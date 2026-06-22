@@ -1,19 +1,18 @@
-FROM node:24-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
-# Copiar todo el repo
-COPY . .
+# Copiar solo la carpeta de enygma
+COPY artifacts/enygma .
 
-# Cambiar a carpeta enygma y hacer build SOLO de esa carpeta
-WORKDIR /app/artifacts/enygma
-
-# Instalar dependencias locales (ignorar workspace)
-RUN npm install --legacy-peer-deps --no-save
+# Instalar dependencias
+RUN npm install --legacy-peer-deps
 
 # Build
 RUN npm run build
 
-# Servir
+# Exponer puerto
 EXPOSE 3000
+
+# Start
 CMD ["npm", "start"]

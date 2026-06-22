@@ -8,3 +8,17 @@ node_modules
 **/coverage
 attached_assets
 .local
+.env
+.env.local
+pnpm-lock.yaml
+pnpm-workspace.yaml
+.pnpm-store
+.git
+.gitignore
+.vscode
+.DS_Store
+*.md
+README*
+docs
+test
+tests
