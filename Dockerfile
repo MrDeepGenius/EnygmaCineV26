@@ -19,13 +19,11 @@ FROM node:20-slim
 
 WORKDIR /app
 
-# Copy only the compiled dist folder
+# Copy the built files
 COPY --from=builder /app/artifacts/enygma/dist/public ./
-
-# Install http-server which doesn't add restrictive CSP headers
-RUN npm install -g http-server
+# Copy server.js
+COPY server.js ./
 
 EXPOSE 3000
-# Use -r to rewrite requests to index.html for SPA routing
-CMD ["http-server", "-p", "3000", "--cors", "-r", "index.html"]
+CMD ["node", "server.js"]
 
