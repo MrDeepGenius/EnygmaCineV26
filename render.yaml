@@ -5,8 +5,8 @@ services:
     region: oregon
     plan: free
     healthCheckPath: /health
-    buildCommand: pnpm install --frozen-lockfile && cd artifacts/api-server && pnpm run build
-    startCommand: cd artifacts/api-server && pnpm run start
+    buildCommand: npm install && cd artifacts/api-server && npm run build
+    startCommand: cd artifacts/api-server && npm run start
     envVars:
       - key: NODE_ENV
         value: production
@@ -18,7 +18,7 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: cd artifacts/enygma && pnpm install --frozen-lockfile && pnpm run build
+    buildCommand: cd artifacts/enygma && npm install && npm run build
     startCommand: cd artifacts/enygma && npm start
     envVars:
       - key: NODE_ENV
