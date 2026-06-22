@@ -1,12 +1,12 @@
-FROM node:20-alpine
+FROM node:20-slim
 
 WORKDIR /app
 
 # Copiar solo enygma
 COPY artifacts/enygma .
 
-# Instalar sin workspace
-RUN npm install --legacy-peer-deps --omit=dev
+# Instalar sin workspace, solo production
+RUN npm install --legacy-peer-deps --production
 
 # Build
 RUN npm run build
