@@ -15,8 +15,8 @@ services:
     env: node
     region: virginia
     plan: free
-    buildCommand: cd artifacts/api-server && npm install --legacy-peer-deps && npm run build
-    startCommand: cd artifacts/api-server && npm start
+    buildCommand: npm install -g pnpm && pnpm install && pnpm -F @workspace/api-server build
+    startCommand: pnpm -F @workspace/api-server start
     envVars:
       - key: NODE_ENV
         value: production
