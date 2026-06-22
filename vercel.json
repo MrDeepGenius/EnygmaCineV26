@@ -1,0 +1,9 @@
+{
+  "buildCommand": "cd artifacts/enygma && npm install --legacy-peer-deps && npm run build",
+  "outputDirectory": "artifacts/enygma/dist/public",
+  "framework": "vite",
+  "nodeVersion": "20.x",
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
