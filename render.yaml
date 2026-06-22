@@ -1,29 +1,16 @@
 services:
   - type: web
-    name: enygma-api
-    env: node
-    region: oregon
-    plan: free
-    healthCheckPath: /health
-    buildCommand: npm install --legacy-peer-deps --no-optional && npm run build --prefix=artifacts/api-server
-    startCommand: npm run start --prefix=artifacts/api-server
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: PORT
-        value: 10000
-
-  - type: web
     name: enygma-frontend
     env: node
     region: oregon
     plan: free
-    buildCommand: npm install --legacy-peer-deps --no-optional && npm run build --prefix=artifacts/enygma
-    startCommand: npm start --prefix=artifacts/enygma
+    buildCommand: |
+      cd artifacts/enygma && \
+      npm install --legacy-peer-deps && \
+      npm run build
+    startCommand: cd artifacts/enygma && npm start
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 3000
-      - key: BASE_PATH
-        value: /
