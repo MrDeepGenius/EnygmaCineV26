@@ -20,13 +20,16 @@ FROM node:20-slim
 
 WORKDIR /app
 
-# Install pnpm
-RUN npm install -g pnpm
+# Copy solo el output compilado
+COPY --from=builder /app/artifacts/enygma/dist/public ./public
 
-# Copy the entire workspace from builder (needed to run the app)
-COPY --from=builder /app .
+# Copiar package.json para poder servir la app
+COPY --from=builder /app/artifacts/enygma/package.json ./
 
-# Start
+# Install minimal runtime dependencies (only for serving static files)
+RUN npm install -g pnpm && npm install -g serve
+
+# Servir los archivos estáticos compilados
 EXPOSE 3000
-CMD ["pnpm", "-F", "@workspace/enygma", "start"]
+CMD ["serve", "-s", "public", "-l", "3000"]
 
