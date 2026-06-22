@@ -2,18 +2,17 @@ FROM node:24-alpine
 
 WORKDIR /app
 
-# Copiar archivos
-COPY . .
+# Copiar solo artifacts/enygma
+COPY artifacts/enygma/package*.json ./
+COPY artifacts/enygma/tsconfig.json ./
+COPY artifacts/enygma/vite.config.ts ./
+COPY artifacts/enygma/src ./src
+COPY artifacts/enygma/public ./public
 
-# Limpiar pnpm si existe
-RUN npm cache clean --force || true
+# Instalar y buildear
+RUN npm install --legacy-peer-deps && npm run build
 
-# Instalar dependencias con npm
-RUN npm install --legacy-peer-deps
-
-# Build
-RUN npm run build
-
-# Start frontend
+# Servir
 EXPOSE 3000
 CMD ["npm", "start"]
+
